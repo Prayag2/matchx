@@ -1,0 +1,21 @@
+/** 
+ * @mainpage MatchX Documentation
+ *
+ * @section intro Introduction
+ * MatchX is a simple REG-NMS inspired C++ crypto matching engine.
+ * It works by reading order strings from a Redis queue and parsing them immediately.
+ *
+ * @section features Features
+ * - Clean, commented C++ code
+ * - Handles 10000 orders per second
+ * - Generates trade execution data
+ * - Disseminates order L2 updates, trade execution data and order book details
+ *
+ * @section build Building the project
+ * ```bash
+ * docker compose up --build
+ * ```
+ *
+ * @section authors Authors
+ * - Prayag Jain <prayagjain2@gmail.com>
+ */

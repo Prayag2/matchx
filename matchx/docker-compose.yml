@@ -1,0 +1,30 @@
+# How to run this file:
+# $ docker compose up --build
+# 
+# Two containers will be created: matchx_matchx_1 and matchx_redis_1
+# To enter any of the containers:
+# $ docker compose exec matchx bash
+# $ docker compose exec redis bash
+
+services:
+  matchx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:8.2.2
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

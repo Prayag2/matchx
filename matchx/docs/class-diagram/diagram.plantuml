@@ -1,0 +1,134 @@
+@startuml
+!theme mars
+
+dataclass Price {
+<<typedef>>
+= int64_t
+}
+
+dataclass Quantity {
+<<typedef>>
+= int64_t
+}
+
+dataclass ID {
+<<typedef>>
+= uint64_t
+}
+
+enum OrderType {
+    MARKET
+    LIMIT
+}
+
+enum OrderSide {
+    BUY
+    SELL
+}
+
+class MatchingEngine {
+    - m_orderBookManager: OrderBookManager*
+    - m_orderParser: OrderParser*
+    - m_timeInForce: TimeInForce*
+}
+
+abstract class TimeInForce {
+    + {abstract} void execute(OrderBook&, OrderBookUpdate&, Order&) = 0
+}
+
+class GoodTillCancelledTIF extends TimeInForce {
+    + void execute(OrderBook*, OrderBookUpdate*, Order*)
+}
+
+class ImmediateOrCancelledTIF extends TimeInForce {
+    + void execute(OrderBook*, OrderBookUpdate*, Order*)
+}
+
+class ForceOrKillTIF extends TimeInForce {
+    + void execute(OrderBook*, OrderBookUpdate*, Order*)
+}
+
+abstract class Order {
+    - m_timestamp: boost::posix_time::ptime
+    - m_symbol: std::string
+    - m_id: ID
+    - m_price: Price
+    - m_quantity: Quantity
+    - m_type: OrderType
+    - m_side: OrderSide
+    - m_timeInForce: TimeInForce*
+    
+    + id()
+    + price()
+    + symbol()
+    + quantity()
+    + type()
+    + side()
+    + timeInForce()
+    + {abstract} OrderBookUpdate* match(OrderBook&, Order&) = 0
+}
+
+class MarketOrder extends Order {
+    + OrderBookUpdate* match(OrderBook&)
+}
+
+class LimitOrder extends Order {
+    + OrderBookUpdate* match(OrderBook&)
+}
+
+class OrderBookUpdate {
+    - m_timestamp: boost::posix_time::ptime
+    - m_symbol: std::string
+    - m_asks: std::vector
+    - m_bids: std::vector
+    + stringify()
+}
+
+class Trade {
+    - m_timestamp: boost::posix_time::ptime
+    - m_symbol: std::string
+    - m_tradeID: ID
+    - m_makerOrderID: ID
+    - m_takerOrderID: ID
+    - m_price : Price
+    - m_quantity: Quantity
+    - m_aggressorSide: OrderSide
+    + stringify()
+}
+
+class Disseminator {
+    + publish(std::string, std::string)
+}
+
+class OrderBook {
+    - m_asks: map<Price, std::list<Order*>>
+    - m_bids: map<Price, std::list<Order*>>
+    - m_symbol: std::string
+    
+    + bestBid()
+    + bestAsk()
+    + extractBestBid(Quantity qty)
+    + extractBestAsk(Quantity qty)
+    + applyUpdate(OrderBookUpdate*)
+    + symbol()
+}
+
+OrderParser --> Order
+OrderBook --> OrderBookUpdate
+OrderBook *-- Order
+OrderBookManager *-- OrderBook
+Order --> TimeInForce
+MatchingEngine *-- OrderBookManager
+MatchingEngine *-- TimeInForce
+MatchingEngine *-- OrderParser
+MatchingEngine *-- Disseminator
+MatchingEngine --> Trade
+
+class OrderBookManager {
+    + OrderBook* getOrderBook(std::string symbol)
+}
+
+class OrderParser {
+    + Order* createOrder(std::string orderString)
+}
+@enduml
