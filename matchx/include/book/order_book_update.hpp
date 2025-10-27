@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <deque>
 #include <memory>
 #include <orders/order.hpp>
 #include <common/types.hpp>
@@ -15,12 +14,18 @@
 class OrderBookUpdate {
 private:
     Time m_timestamp;
-    Quantity m_quantityDiffAsks;
-    Quantity m_quantityDiffBids;
-    std::deque<std::shared_ptr<Order>> m_newOrders;
+    Quantity m_quantityChange;
+    Order::Side m_quantityChangeSide;
     std::string m_symbol;
 
+    std::shared_ptr<Order> m_newOrder{nullptr};
+    std::shared_ptr<Order> m_originalOrder{nullptr};
+
 public:
+    OrderBookUpdate() = delete;
+
+    OrderBookUpdate(std::shared_ptr<Order> originalOrder);
+
     /**
      * @brief Reduces quantity of orders by `difference` 
      * @param by The amount by which quantity should be reduced (orders are removed if quantity is 0).
@@ -36,10 +41,27 @@ public:
     void addOrder(std::shared_ptr<Order> order);
 
     /**
-     * @brief Generates a JSON formatted string that represents an L2 update
-     * @return Returns a string
+     * @brief Remove order
      */
-    std::string stringify() const;
+    void removeOrder();
+
+    /**
+     * @brief Get original order
+     * @return Shared pointer to the order
+     */
+    std::shared_ptr<Order> originalOrder() const;
+
+    /**
+     * @brief Get change in quantity
+     * @returns A Quantity value
+     */
+    Quantity quantity() const;
+
+    /**
+     * @brief Returns the side where quantity will be changed
+     * @return Order::Side enum
+     */
+    Order::Side quantitySide() const;
 
     /// This class is a friend of OrderBook
     friend OrderBook;

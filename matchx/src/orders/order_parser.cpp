@@ -56,7 +56,7 @@ std::shared_ptr<Order> OrderParser::parse(const std::string& str) const {
 
         if (type == "MARKET") {
             return std::make_shared<MarketOrder>(
-                id, timestamp, symbol, price, quantity, getSide.at(side), getTIF(timeInForce));
+                id, timestamp, symbol, quantity, getSide.at(side), getTIF(timeInForce));
         } else if (type == "LIMIT") {
             return std::make_shared<LimitOrder>(
                 id, timestamp, symbol, price, quantity, getSide.at(side), getTIF(timeInForce));

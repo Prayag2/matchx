@@ -28,6 +28,12 @@ public:
     std::shared_ptr<Order> parse(const std::string& str) const;
 
 private:
+    /**
+     * @brief Reads a value from the stream into a variable
+     * @throws ParseException if there is some error
+     * @param stream A string stream
+     * @param variable The variable to store the value into
+     */
     template <typename T>
     static void read(std::istringstream& stream, T& variable);
 };

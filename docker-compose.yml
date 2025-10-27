@@ -9,10 +9,10 @@
 services:
   matchx:
     build:
-      context: .
+      context: ./matchx
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "4000:4000"
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -25,6 +25,21 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  stream:
+    build:
+      context: ./stream
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis
 
 volumes:
   redis-data:

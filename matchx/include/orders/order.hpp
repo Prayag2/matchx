@@ -3,12 +3,12 @@
 #include <memory>
 #include <string>
 #include <common/types.hpp>
+#include <book/order_book.hpp>
 
-class OrderBook;
 class OrderBookUpdate;
 class TimeInForce;
 
-class Order {
+class Order : public std::enable_shared_from_this<Order> {
 public:
     enum Type { MARKET, LIMIT };
     enum Side { BUY, SELL };
@@ -23,6 +23,9 @@ protected:
     Type m_type;
     Side m_side;
 
+    virtual std::shared_ptr<OrderBookUpdate> matchBuy(std::shared_ptr<OrderBook> orderBook) = 0;
+    virtual std::shared_ptr<OrderBookUpdate> matchSell(std::shared_ptr<OrderBook> orderBook) = 0;
+
 public:
     ID id() const;
     Price price() const;
@@ -34,7 +37,7 @@ public:
     const std::string& symbol() const;
     void setQuantity(Quantity newQuantity);
 
-    virtual std::shared_ptr<OrderBookUpdate> match(std::shared_ptr<OrderBook> orderBook) const = 0;
+    std::shared_ptr<OrderBookUpdate> match(std::shared_ptr<OrderBook> orderBook);
 
     static std::shared_ptr<Order> makeEmpty();
 };

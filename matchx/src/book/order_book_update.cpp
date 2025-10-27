@@ -1,5 +1,9 @@
 #include <book/order_book_update.hpp>
+#include <memory>
 #include <plog/Log.h>
+
+OrderBookUpdate::OrderBookUpdate(std::shared_ptr<Order> order)
+    : m_originalOrder{order} {}
 
 void OrderBookUpdate::reduceQuantity(Quantity difference, Order::Side side) {
     if (difference < 0) {
@@ -7,22 +11,26 @@ void OrderBookUpdate::reduceQuantity(Quantity difference, Order::Side side) {
         difference = 0;
     }
 
-    switch(side) {
-        case Order::BUY:
-            m_quantityDiffBids += difference;
-            break;
-        case Order::SELL:
-            m_quantityDiffAsks += difference;
-            break;
-        default:
-            PLOGW << "Invalid side chosen: " << side;
-    }
+    m_quantityChange += difference;
+    m_quantityChangeSide = side;
 }
 
 void OrderBookUpdate::addOrder(std::shared_ptr<Order> order) {
-    m_newOrders.push_back(order);
+    m_newOrder = std::move(order);
 }
 
-std::string OrderBookUpdate::stringify() const {
-    return "";
+void OrderBookUpdate::removeOrder() {
+    m_newOrder = nullptr;
+}
+
+Quantity OrderBookUpdate::quantity() const {
+    return m_quantityChange;
+}
+
+Order::Side OrderBookUpdate::quantitySide() const {
+    return m_quantityChangeSide;
+}
+
+std::shared_ptr<Order> OrderBookUpdate::originalOrder() const {
+    return m_originalOrder;
 }

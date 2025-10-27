@@ -9,4 +9,6 @@ public:
         std::shared_ptr<OrderBookUpdate> orderBookUpdate,
         std::shared_ptr<Order> order
     ) const override;
+
+    TimeInForce::Type type() const override;
 };

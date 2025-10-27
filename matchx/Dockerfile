@@ -4,7 +4,7 @@ FROM ubuntu:24.04 AS builder
 # installing packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates build-essential cmake git lsb-release curl gpg \
-    libssl-dev python3 libhiredis-dev doxygen \
+    libssl-dev python3 libhiredis-dev doxygen nodejs npm \
     && rm -rf /var/lib/apt/lists/*
 
 # installing redis
@@ -20,6 +20,9 @@ WORKDIR /tmp
 RUN git clone https://github.com/sewenew/redis-plus-plus.git redispp \
     && cd redispp && mkdir build && cd build \
     && cmake .. && make && make install
+
+# Install wscat for testing
+RUN npm install -g wscat
 
 WORKDIR /app
 COPY . /app
