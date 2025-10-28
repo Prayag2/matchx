@@ -35,14 +35,25 @@ FetchContent_MakeAvailable(plog)
 
 target_link_libraries(${ENGINE} plog::plog)
 
-# Installing YAML-CPP
-# include(FetchContent)
-# 
-# FetchContent_Declare(
-#   yaml-cpp
-#   GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-#   GIT_TAG 0.8.0
-# )
-# FetchContent_MakeAvailable(yaml-cpp)
-# 
-# target_link_libraries(${ENGINE} yaml-cpp::yaml-cpp)
+# Google Test
+add_library(mlib ${SOURCES})
+target_include_directories(mlib PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(mlib PUBLIC ${HIREDIS_HEADER})
+target_link_libraries(mlib ${HIREDIS_LIB})
+target_include_directories(mlib PUBLIC ${REDIS_PLUS_PLUS_HEADER})
+target_link_libraries(mlib ${REDIS_PLUS_PLUS_LIB})
+target_link_libraries(mlib plog::plog)
+
+find_library(REDIS_PLUS_PLUS_LIB redis++)
+
+add_subdirectory(extern/googletest)
+
+enable_testing()
+
+file(GLOB_RECURSE TESTS tests/*.cpp)
+
+add_executable(mtests ${TESTS})
+target_link_libraries(mtests PRIVATE mlib GTest::gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(mtests)
