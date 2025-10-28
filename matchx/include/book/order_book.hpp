@@ -1,10 +1,10 @@
 #pragma once
 
 #include <functional>
-#include <list>
-#include <map>
 #include <memory>
+#include <deque>
 #include <string>
+#include <map>
 #include <unordered_set>
 #include <common/types.hpp>
 
@@ -19,7 +19,7 @@ class MatchingEngine;
 class OrderBook {
 public:
     template<typename Compare>
-    using BookType = std::map<Price, std::list<std::shared_ptr<Order>>, Compare>;
+    using BookType = std::map<Price, std::deque<std::shared_ptr<Order>>, Compare>;
     using AskBook = BookType<std::less<Price>>;
     using BidBook = BookType<std::greater<Price>>;
 
@@ -60,24 +60,43 @@ public:
     /**
      * @brief Returns quantity available at the specified Price level for Asks
      * @param price Price
+     * @return Quantity
      */
     Quantity quantityAtPriceAsks(Price price) const;
 
     /**
      * @brief Returns quantity available at the specified Price level for Bids
      * @param price Price
+     * @return Quantity
      */
     Quantity quantityAtPriceBids(Price price) const;
 
     /**
      * @brief Generates a JSON string that contains trade data
-     * @param makerOrder The order which initiated the transaction
-     * @param takerOrder The order which 
+     * @param makerOrder ID of the resting order
+     * @param takerOrder ID of the order which initiated the trade
+     * @return std::string in JSON format
      */
     std::string generateTradeData(std::shared_ptr<Order> makerOrder, std::shared_ptr<Order> takerOrder, Price executedPrice, Quantity executedQuantity);
+
+    /**
+     * @brief Generates a JSON string that contains market data and L2 order book updates
+     * @param updateObj the update object which made changes to the order book
+     * @param updatedAsks set of prices which whos quantity were changed for asks
+     * @param updatedBids set of prices which whos quantity were changed for bids
+     * @return std::string in JSON format
+     */
     std::string generateMarketData(std::shared_ptr<OrderBookUpdate> updateObj, std::unordered_set<Price> updatedAsks, std::unordered_set<Price> updatedBids);
 
+    /**
+     * @brief Returns the symbol of this order book
+     * @return std::string
+     */
     const std::string& symbol() const;
 
+    /**
+     * @brief Gets the next trade ID and updates the internal counter
+     * @return std::string in this format: "<symbol>:<integer id>"
+     */
     std::string getNextTradeID();
 };

@@ -38,6 +38,10 @@ private:
     static void read(std::istringstream& stream, T& variable);
 };
 
+/**
+ * @class ParseException
+ * @brief Thrown when there is some problem with parsing an order string
+ */
 class ParseException : public std::exception {
 private:
     std::string m_message;

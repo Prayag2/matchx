@@ -15,7 +15,7 @@ int main() {
 
     PLOGI << "Starting Engine";
     MatchingEngine engine{};
-    engine.run();
+    engine.benchmark();
 
     return 0;
 }

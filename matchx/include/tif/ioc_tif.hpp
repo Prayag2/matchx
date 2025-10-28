@@ -2,6 +2,10 @@
 
 #include <tif/tif.hpp>
 
+/**
+ * @class ImmediateOrCancelTIF
+ * @brief An order is filled as much as possible and the rest is cancelled
+ */
 class ImmediateOrCancelTIF : public TimeInForce {
 public:
     void execute(

@@ -2,6 +2,11 @@
 
 #include <tif/tif.hpp>
 
+/**
+ * @class GoodTillCancelledTIF
+ * @brief An order is filled as much as possible and the remaining rests in the order book.
+ *        This can only be applied for Limit orders as Market orders do not rest in the order book
+ */
 class GoodTillCancelledTIF : public TimeInForce {
 public:
     void execute(

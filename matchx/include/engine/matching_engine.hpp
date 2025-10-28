@@ -23,7 +23,7 @@ public:
     void run();
 
     /**
-     * @brief Benchmarks 1,000,000 orders
+     * @brief Benchmarks 1,000,000 orders and prints the number of orders processed in one second
      */
     void benchmark();
 
