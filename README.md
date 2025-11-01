@@ -1,5 +1,5 @@
 # MatchX
-MatchX is an REG-NMS inspired C++ crypto matching engine that can process upto 20,000 orders per second. It was written as part of an online assessment for GoQuant's recruitment process by Prayag Jain. The contents of this project are completely confidential and this README is intended only for GoQuant's recruitment team.
+MatchX is an REG-NMS inspired C++ crypto matching engine that can process upto 20,000 orders per second. It was written as part of an online assessment for GoQuant's recruitment process by Prayag Jain.
 
 # Features
 - Order Types Supported: Market, Limit with time in force instructions: IOC (Immediate or Cancelled), FOK (Fill or Kill) and GTC (Good Till Cancelled).
