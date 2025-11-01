@@ -25,5 +25,5 @@ The program is divided into three services: `api`, `matchx` and `stream`. `api` 
 The matching engine is based on a simple architecture. A python based FastAPI app let's users create new orders. These orders are converted to an order string which is then sent to a Redis queue. Matchx pops this item from the Redis queue and parses the order string to create a new Order and process it. After processing the order, order book updates are sent to a Redis pub/sub channel called "channel:market", while trade execution data is published to a channel called "channel:trade_execution". Another python FastAPI server subscribes to these channels and streams this data to websocket clients connected to it.
 
 ## Low Level Design
-The C++ code documentation can be found [here](./docs/index.html).
+The C++ code documentation can be found [here](https://prayag2.github.io/matchx).
 <img src="./docs/class-diagram/diagram.svg" style="width: 100%" />
